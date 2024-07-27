@@ -1,0 +1,17 @@
+.detail-link-col {
+  text-align: center;
+
+  .detail-page-btn {
+    padding: 0;
+    border: none;
+    background-color: white;
+    color: rgb(49, 96, 250);
+    font-size: 2em;
+    text-align: center;
+
+    &:hover {
+      color: yellow;
+    }
+  }
+}
+
