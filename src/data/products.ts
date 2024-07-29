@@ -1,16 +1,6 @@
-export interface ProductObject {
-  id: string;
-  name:string;
-  description: string;
-  price: number;
-  weight: number;
-  supplier: string;
-  imageUrl: string;
-  category: string;
-}
+import { Product } from "../interfaces/products/product.interface";
 
-
-export const productsList: ProductObject[] = [
+export const productsList: Product[] = [
   {
     id: "1",
     name: "IPHONE 12",

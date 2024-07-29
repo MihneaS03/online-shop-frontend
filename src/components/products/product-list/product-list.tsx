@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { ProductObject, productsList } from '../../data/products'
+import { productsList } from '../../../data/products'
 import ProductListItem from '../product-list-item/product-list-item';
 import './product-list.scss'
+import { Product } from '../../../interfaces/products/product.interface';
 
 export default function ProductList() {
-  const products: ProductObject[] = productsList;
+  const products: Product[] = productsList;
   return (
     <>
       <div className='header'>

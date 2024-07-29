@@ -1,7 +1,8 @@
-import { ShoppingCartProduct } from "../../context/shopping-cart.context";
+import { CartItem } from "../../../interfaces/cart/cart.interface";
 
-type ShoppingCartItemProps = {
-  item: ShoppingCartProduct;
+
+interface ShoppingCartItemProps {
+  item: CartItem;
 }
 
 export default function ShoppingCartItem({ item }: ShoppingCartItemProps) {

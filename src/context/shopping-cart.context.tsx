@@ -1,44 +1,38 @@
 import { createContext, ReactNode, useState } from "react";
+import { CartItem } from "../interfaces/cart/cart.interface";
 
-export type ShoppingCartProduct = {
-  id: string;
-  category: string;
-  productName: string;
-  price: number;
-  quantity: number;
+interface ShoppingCartContextType {
+  shoppingCartItems: CartItem[],
+  addItemToCart: (item: CartItem) => void,
+  deleteItemFromCart: (id: string) => void,
 }
 
-type ShoppingCartProviderProps = {
+interface ShoppingCartProviderProps {
   children: ReactNode;
 }
 
-export const ShoppingCartContext = createContext<ShoppingCartProduct[]>([]);
-export const ShoppingCartAddContext = createContext<(item: ShoppingCartProduct) => void>(() => {});
-export const ShoppingCartDeleteContext = createContext<(id: string) => void>(() => {});
+export const ShoppingCartContext = createContext<ShoppingCartContextType>({} as ShoppingCartContextType);
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const [shoppingCartItems, setShoppingCartItems] = useState<ShoppingCartProduct[]>([]);
+  const [shoppingCartItems, setShoppingCartItems] = useState<CartItem[]>([]);
 
-  function addItemToCart(item: ShoppingCartProduct) {
-    const itemExistsInTheCart: boolean = shoppingCartItems.find(i => i.id === item.id) !== undefined ? true: false;
+  const addItemToCart = (cartItem: CartItem) => {
+    const itemExistsInTheCart: boolean = shoppingCartItems.find(item => cartItem.id === item.id) !== undefined;
+
     if (itemExistsInTheCart) {
-      setShoppingCartItems((prevItems) => prevItems.map((i) => i.id === item.id ? {...i, quantity: i.quantity + 1} : i))
+      setShoppingCartItems((prevItems) => prevItems.map((item) => item.id === cartItem.id ? {...item, quantity: item.quantity + 1} : item))
     } else {
-      setShoppingCartItems((prevItems) => [...prevItems, {...item, quantity: 1}]);
+      setShoppingCartItems((prevItems) => [...prevItems, {...cartItem, quantity: 1}]);
     }
   }
 
-  function deleteItemFromCart(id: string) {
+  const deleteItemFromCart = (id: string) => {
     setShoppingCartItems((prevItems) => prevItems.filter(item => item.id !== id));
   }
 
   return (
-    <ShoppingCartContext.Provider value={shoppingCartItems}>
-    <ShoppingCartAddContext.Provider value={addItemToCart}>
-    <ShoppingCartDeleteContext.Provider value={deleteItemFromCart}>
+    <ShoppingCartContext.Provider value={{shoppingCartItems, addItemToCart, deleteItemFromCart}}>
     {children}
-    </ShoppingCartDeleteContext.Provider>
-    </ShoppingCartAddContext.Provider>
     </ShoppingCartContext.Provider>
   )
 }

@@ -1,8 +1,8 @@
 import './App.scss'
-import ProductDetails from './components/product-details/product-details'
-import ProductList from './components/product-list/product-list'
+import ProductDetails from './components/products/product-details/product-details'
+import ProductList from './components/products/product-list/product-list'
 import { Navigate, Route, Routes } from 'react-router-dom'
-import ShoppingCart from './components/shopping-cart/shopping-cart'
+import ShoppingCart from './components/cart/shopping-cart/shopping-cart'
 
 function App() {
   return (

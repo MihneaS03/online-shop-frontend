@@ -1,14 +1,15 @@
 import { useParams } from "react-router-dom";
-import { ProductObject, productsList } from "../../data/products";
+import { productsList } from "../../../data/products";
 import './product-details.scss'
 import { useContext } from "react";
-import { ShoppingCartAddContext, ShoppingCartProduct } from "../../context/shopping-cart.context";
+import { ShoppingCartContext } from "../../../context/shopping-cart.context";
+import { Product } from "../../../interfaces/products/product.interface";
 
 export default function ProductDetails() {
   const {id} = useParams();
-  const product: ProductObject | undefined = productsList.find(p => p.id === id);
+  const product: Product | undefined = productsList.find(p => p.id === id);
 
-  const addProductToShoppingCart: (item: ShoppingCartProduct) => void = useContext(ShoppingCartAddContext)
+  const {addItemToCart} = useContext(ShoppingCartContext)
 
   return (
     <>
@@ -19,7 +20,7 @@ export default function ProductDetails() {
             <h1>Product: {product.name}</h1>
           </div>
           <div className="buttons">
-            <button onClick={() => addProductToShoppingCart({id: product.id, category: product.category, productName: product.name, price: product.price, quantity: 1}) }>Add to cart</button>
+            <button onClick={() => addItemToCart({id: product.id, category: product.category, productName: product.name, price: product.price, quantity: 1}) }>Add to cart</button>
             <button className="edit-btn">EDIT</button>
             <button className="delete-btn">DELETE</button>
           </div>

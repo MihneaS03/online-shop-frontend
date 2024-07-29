@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import { useContext } from "react";
-import { ShoppingCartContext, ShoppingCartProduct } from "../../context/shopping-cart.context";
+import { ShoppingCartContext } from "../../../context/shopping-cart.context";
 import ShoppingCartItem from "../shopping-cart-item/shopping-cart-item";
+import { CartItem } from "../../../interfaces/cart/cart.interface";
 
 export default function ShoppingCart() {
-  const cartItems = useContext(ShoppingCartContext);
+  const {shoppingCartItems} = useContext(ShoppingCartContext);
 
   return (
     <>
@@ -26,7 +27,7 @@ export default function ShoppingCart() {
           <th>Quantity</th>
           <th></th>
         </tr>
-        {cartItems.map((item: ShoppingCartProduct) => 
+        {shoppingCartItems.map((item: CartItem) => 
           <ShoppingCartItem key={item.id} item={item}/>
         )}
       </table> 
