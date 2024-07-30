@@ -13,3 +13,13 @@ export interface ProductCategory {
   name: string;
   description: string;
 }
+
+export interface EditProductDTO {
+  name: string;
+  description: string;
+  price: number;
+  weight: number;
+  supplier: string;
+  imageUrl: string;
+  category: string;
+}

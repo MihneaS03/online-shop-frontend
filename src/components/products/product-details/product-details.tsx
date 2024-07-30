@@ -63,7 +63,7 @@ export default function ProductDetails() {
           </div>
           <div className="buttons">
             <button onClick={() => addItemToCart({id: product.id, category: product.category.name, productName: product.name, price: product.price, quantity: 1}) }>Add to cart</button>
-            <button className="edit-btn">EDIT</button>
+            <button className="edit-btn" onClick={() => navigate("/products/edit")}>EDIT</button>
             <button className="delete-btn" onClick={() => handleDelete(product.id)}>DELETE</button>
           </div>
         </div>
