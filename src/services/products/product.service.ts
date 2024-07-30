@@ -1,8 +1,8 @@
-import { BASE_URL } from "../../constants/url.constant"
+import { BASE_URL, API_URLS } from "../../constants/url.constant"
 
-const PRODUCTS_BASE_URL = `${BASE_URL}/products`
+const PRODUCTS_BASE_URL: string = BASE_URL + API_URLS.PRODUCTS;
 
-const productService = {
+export const productService = {
   getAll: async (signal: AbortSignal | null = null) => {
     try {
       const response = await fetch(PRODUCTS_BASE_URL, {signal});
@@ -49,6 +49,4 @@ const productService = {
     }
   }
 }
-
-export default productService;
 

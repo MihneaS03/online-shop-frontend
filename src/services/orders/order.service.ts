@@ -1,9 +1,9 @@
-import { BASE_URL } from "../../constants/url.constant"
+import { BASE_URL, API_URLS } from "../../constants/url.constant"
 import { CreateOrderDTO } from "../../interfaces/orders/order.interface";
 
-const ORDERS_BASE_URL = `${BASE_URL}/orders`
+const ORDERS_BASE_URL: string = BASE_URL + API_URLS.ORDERS;
 
-const orderService = {
+export const orderService = {
   create: async (orderData: CreateOrderDTO) => {
     try {
       const response = await fetch(ORDERS_BASE_URL, {
@@ -26,5 +26,3 @@ const orderService = {
     }
   }
 }
-
-export default orderService;
