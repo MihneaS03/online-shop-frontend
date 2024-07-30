@@ -10,7 +10,7 @@ export default function ProductListItem({product}: ProductProps) {
   return (
     <>
       <tr>
-            <td>{product.category}</td>
+            <td>{product.category.name}</td>
             <td>{product.name}</td>
             <td>{product.price}</td>
             <td className= "detail-link-col"><Link to={`/products/${product.id}`}><button className="detail-page-btn">{">"}</button></Link></td>

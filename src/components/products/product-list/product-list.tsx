@@ -1,11 +1,41 @@
 import { Link } from 'react-router-dom';
-import { productsList } from '../../../data/products'
 import ProductListItem from '../product-list-item/product-list-item';
 import './product-list.scss'
 import { Product } from '../../../interfaces/products/product.interface';
+import { useEffect, useState } from 'react';
+import productService from '../../../services/products/product.service';
 
 export default function ProductList() {
-  const products: Product[] = productsList;
+  const [products, setProducts] = useState<Product[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchAllProducts = async () => {
+      try {
+        const allProducts = await productService.getAll(controller.signal);
+        setProducts(allProducts);
+        setError(null); 
+      } catch (err) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else {
+          setError('An unknown error occured');
+        }
+        setProducts(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchAllProducts();
+
+    return () => controller.abort();
+
+}, [])
+
   return (
     <>
       <div className='header'>
@@ -19,17 +49,24 @@ export default function ProductList() {
         </div>
       </div>   
       
-      <table>
-        <tr>
-          <th>Category</th>
-          <th>Product Name</th>
-          <th>Price</th>
-          <th></th>
-        </tr>
-        {products.map((product) => 
-          <ProductListItem key={product.id} product={product}/>
-        )}
-      </table>
+      {loading && <div>Loading products...</div> }
+      {error ? <div>{error}</div> :
+        <table>
+          <thead>
+          <tr>
+            <th>Category</th>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          {products && products.map((product) => 
+            <ProductListItem key={product.id} product={product}/>
+          )}
+          </tbody>
+        </table>
+      }
     </>
   )
 }
