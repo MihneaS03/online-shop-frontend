@@ -46,7 +46,6 @@ export default function ProductDetails() {
     } catch (err) {
       console.error(err);
     }
-    
   }
 
   const {addItemToCart} = useContext(ShoppingCartContext);

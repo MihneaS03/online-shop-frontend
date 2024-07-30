@@ -4,15 +4,18 @@ import { CreateOrderDTO } from "../../interfaces/orders/order.interface";
 const ORDERS_BASE_URL = `${BASE_URL}/orders`
 
 const orderService = {
-  create: async (orderData: CreateOrderDTO, signal: AbortSignal) => {
+  create: async (orderData: CreateOrderDTO) => {
     try {
       const response = await fetch(ORDERS_BASE_URL, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body: JSON.stringify(orderData),
-        signal,
       })
 
       if (!response.ok) {
+        console.log(await response.text());
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
