@@ -33,18 +33,16 @@ const productService = {
     }
   },
 
-  delete: async (id: string, signal: AbortSignal) => {
+  delete: async (id: string) => {
     try {
       const response = await fetch(`${PRODUCTS_BASE_URL}/${id}`, {
         method: 'DELETE',
-        signal,
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
-      return response.json();
     } catch (err) {
       console.error(err);
       throw err;

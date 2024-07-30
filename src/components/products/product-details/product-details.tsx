@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import './product-details.scss'
 import { useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "../../../context/shopping-cart.context";
@@ -7,11 +7,11 @@ import productService from "../../../services/products/product.service";
 
 export default function ProductDetails() {
   const {id} = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  // const product: Product | undefined = productsList.find(p => p.id === id);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -39,6 +39,16 @@ export default function ProductDetails() {
 
   }, [id]);
 
+  const handleDelete = async (id: string) => {
+    try {
+      await productService.delete(id);
+      navigate("/products");
+    } catch (err) {
+      console.error(err);
+    }
+    
+  }
+
   const {addItemToCart} = useContext(ShoppingCartContext);
 
   return (
@@ -55,7 +65,7 @@ export default function ProductDetails() {
           <div className="buttons">
             <button onClick={() => addItemToCart({id: product.id, category: product.category.name, productName: product.name, price: product.price, quantity: 1}) }>Add to cart</button>
             <button className="edit-btn">EDIT</button>
-            <button className="delete-btn">DELETE</button>
+            <button className="delete-btn" onClick={() => handleDelete(product.id)}>DELETE</button>
           </div>
         </div>
 
