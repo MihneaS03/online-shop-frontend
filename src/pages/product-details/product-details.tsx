@@ -1,52 +1,34 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./product-details.scss";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
 import { Product } from "../../interfaces/products/product.interface";
-import { productService } from "../../services/products/product.service";
 import { CartItem } from "../../interfaces/cart/cart.interface";
+import { useFetchProduct } from "../../hooks/useFetchProduct";
+import { useDeleteProduct } from "../../hooks/useDeleteProduct";
 
 export default function ProductDetails() {
   const { id } = useParams();
-  const navigate = useNavigate();
-
   const location = useLocation();
   const { product: productState } = location.state || {};
+  const navigate = useNavigate();
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { product, error, loading, fetchProduct, setProductFromState } =
+    useFetchProduct();
+
+  const { deleteError, deleteLoading, deleteProduct } = useDeleteProduct();
 
   useEffect(() => {
     const controller = new AbortController();
-
-    const fetchProduct = async () => {
-      try {
-        const product = await productService.getById(id!, controller.signal);
-        setProduct(product);
-        setError(null);
-      } catch (err) {
-        if (err instanceof Error) {
-          setError(err.message);
-        } else {
-          setError("An unknown error occured");
-        }
-        setProduct(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!productState) {
-      fetchProduct();
+    if (productState) {
+      setProductFromState(productState);
     } else {
-      setProduct(productState);
-      setError(null);
-      setLoading(false);
+      if (id) {
+        fetchProduct(id, controller.signal);
+      }
     }
-
     return () => controller.abort();
-  }, [id, productState]);
+  }, [id, productState, fetchProduct, setProductFromState]);
 
   const handleAddToCart = (product: Product) => {
     const item: CartItem = {
@@ -59,21 +41,22 @@ export default function ProductDetails() {
     addItemToCart(item);
   };
 
-  const handleDelete = async (id: string) => {
-    try {
-      await productService.delete(id);
-      navigate("/products");
-    } catch (err) {
-      console.error(err);
+  const handleDelete = async () => {
+    if (id) {
+      await deleteProduct(id);
     }
+    navigate("/products");
   };
 
   const { addItemToCart } = useContext(ShoppingCartContext);
 
   return (
     <>
-      {loading && <div>Loading products...</div>}
-      {error && <div>{error}</div>}
+      {loading && <h1>Loading product...</h1>}
+      {error && <h1>{error}</h1>}
+
+      {deleteLoading && <h1>Deleting product...</h1>}
+      {deleteError && <h1>{deleteError}</h1>}
 
       {!product ? (
         <h1>The product could not be found</h1>
@@ -88,10 +71,7 @@ export default function ProductDetails() {
                 Add to cart
               </button>
               <button className="edit-btn">EDIT</button>
-              <button
-                className="delete-btn"
-                onClick={() => handleDelete(product.id)}
-              >
+              <button className="delete-btn" onClick={() => handleDelete()}>
                 DELETE
               </button>
             </div>

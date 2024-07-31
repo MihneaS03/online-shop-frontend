@@ -3,15 +3,17 @@ import { useContext } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
 import ShoppingCartItem from "../../components/shopping-cart/shopping-cart-item/shopping-cart-item";
 import { CartItem } from "../../interfaces/cart/cart.interface";
-import { orderService } from "../../services/orders/order.service";
 import {
   OrderProduct,
   CreateOrderDTO,
 } from "../../interfaces/orders/order.interface";
+import { useCreateOrder } from "../../hooks/useCreateOrder";
 
 export default function ShoppingCart() {
   const navigate = useNavigate();
   const { shoppingCartItems } = useContext(ShoppingCartContext);
+
+  const { error, loading, createOrder } = useCreateOrder();
 
   const handleCheckout = async () => {
     try {
@@ -30,7 +32,7 @@ export default function ShoppingCart() {
         }),
       };
 
-      await orderService.create(mockOrderData);
+      await createOrder(mockOrderData);
       navigate("/products");
     } catch (err) {
       console.error(err);
@@ -67,6 +69,9 @@ export default function ShoppingCart() {
           ))}
         </tbody>
       </table>
+
+      {error && <h1>{error}</h1>}
+      {loading && <h1>Processing Order...</h1>}
     </>
   );
 }
