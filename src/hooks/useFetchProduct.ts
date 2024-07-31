@@ -25,9 +25,9 @@ export const useFetchProduct = () => {
     }
   }, []);
 
-  const setProductFromState = (product: Product) => {
+  const setProductFromState = useCallback((product: Product) => {
     setProduct(product);
-  }
+  }, []);
 
   return {product, error, loading, fetchProduct, setProductFromState};
 }

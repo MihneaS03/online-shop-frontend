@@ -1,4 +1,4 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import "./product-details.scss";
 import { useContext, useEffect } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
@@ -70,7 +70,9 @@ export default function ProductDetails() {
               <button onClick={() => handleAddToCart(product)}>
                 Add to cart
               </button>
-              <button className="edit-btn">EDIT</button>
+              <Link to={`/products/edit/${id}`} state={product}>
+                <button className="edit-btn">EDIT</button>
+              </Link>
               <button className="delete-btn" onClick={() => handleDelete()}>
                 DELETE
               </button>

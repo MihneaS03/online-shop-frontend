@@ -1,4 +1,5 @@
 import { BASE_URL, API_URLS } from "../../constants/url.constant"
+import { CreateProductDTO, EditProductDTO } from "../../interfaces/products/product.interface";
 
 const PRODUCTS_BASE_URL: string = BASE_URL + API_URLS.PRODUCTS;
 
@@ -23,6 +24,50 @@ export const productService = {
       const response = await fetch(`${PRODUCTS_BASE_URL}/${id}`, {signal});
 
       if (!response.ok) {
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+
+      return response.json();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+
+  create: async (productData: CreateProductDTO) => {
+    try {
+      const response = await fetch(PRODUCTS_BASE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productData),
+      })
+
+      if (!response.ok) {
+        console.log(await response.text());
+        throw new Error(`HTTP error: Status ${response.status}`);
+      }
+
+      return response.json();
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  },
+
+  update: async (id: string, productData: EditProductDTO) => {
+    try {
+      const response = await fetch(`${PRODUCTS_BASE_URL}/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(productData),
+      })
+
+      if (!response.ok) {
+        console.log(await response.text());
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
