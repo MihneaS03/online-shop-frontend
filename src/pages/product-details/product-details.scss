@@ -1,0 +1,29 @@
+.delete-btn {
+  background-color: red !important;
+  color: black !important;
+
+  &:hover {
+    border-color: red !important;
+  }
+}
+
+.product-info {
+  display: flex;
+  justify-content: space-between;
+
+  .product-details {
+    display: grid;
+    grid-template-columns: 1fr 10fr;
+    gap: 5px;
+  
+    .tag {
+      color: gray;
+    }
+  }
+
+  img {
+    height: 200px;
+    width: 200px;
+    margin-right: 500px;
+  }
+}
