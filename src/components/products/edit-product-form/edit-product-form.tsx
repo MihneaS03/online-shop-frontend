@@ -5,17 +5,17 @@ import { useParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-const Schema = z.object({
+const EditProductSchema = z.object({
   name: z.string().min(2),
-  category: z.string(),
-  price: z.coerce.number(),
-  weight: z.string().transform((value) => parseInt(value)),
+  category: z.string().uuid({ message: "Invalid UUID" }),
+  price: z.number(),
+  weight: z.number(),
   supplier: z.string(),
   imageUrl: z.string(),
   description: z.string(),
 });
 
-type FormFields = z.infer<typeof Schema>;
+type FormFields = z.infer<typeof EditProductSchema>;
 
 export default function EditProductForm() {
   const { id } = useParams();
@@ -29,7 +29,7 @@ export default function EditProductForm() {
     defaultValues: {
       name: "", //add all the fields and use the values from the edited file
     },
-    resolver: zodResolver(Schema),
+    resolver: zodResolver(EditProductSchema),
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
