@@ -1,7 +1,6 @@
 import { useCallback, useState } from "react";
-import { Product } from "../interfaces/products/product.interface";
-import { productService } from "../services/products/product.service";
-
+import { Product } from "../../interfaces/products/product.interface";
+import { productService } from "../../services/products/product.service";
 
 export const useFetchProduct = () => {
   const [product, setProduct] = useState<Product | null>(null);

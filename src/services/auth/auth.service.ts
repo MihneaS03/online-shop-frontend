@@ -1,22 +1,22 @@
 import { BASE_URL, API_URLS } from "../../constants/url.constant"
-import { CreateOrderDTO } from "../../interfaces/orders/order.interface";
+import { LoginDTO } from "../../interfaces/customers/customer.interface";
 
-const ORDERS_BASE_URL: string = BASE_URL + API_URLS.ORDERS;
+const AUTH_BASE_URL: string = BASE_URL + API_URLS.AUTH;
 
-export const orderService = {
-  create: async (orderData: CreateOrderDTO) => {
+export const authService = {
+  login: async (userData: LoginDTO) => {
     try {
-      const response = await fetch(ORDERS_BASE_URL, {
+      const response = await fetch(AUTH_BASE_URL + '/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(orderData),
+        body: JSON.stringify(userData),
       })
 
       if (!response.ok) {
         if (response.status === 401) {
-          window.location.replace("/login");
+          //window.location.replace("/login");
         }
         throw new Error(`HTTP error: Status ${response.status}`);
       }

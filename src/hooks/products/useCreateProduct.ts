@@ -1,16 +1,15 @@
 import { useCallback, useState } from "react";
-import { orderService } from "../services/orders/order.service";
-import { CreateOrderDTO } from "../interfaces/orders/order.interface";
+import { CreateProductDTO } from "../../interfaces/products/product.interface";
+import { productService } from "../../services/products/product.service";
 
-
-export const useCreateOrder = () => {
+export const useCreateProduct = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const createOrder = useCallback( async (orderData: CreateOrderDTO) => {
+  const createProduct = useCallback( async (productData: CreateProductDTO) => {
     try {
       setLoading(true);
-      await orderService.create(orderData)
+      await productService.create(productData)
       setError(null);
     } catch (err) {
       if (err instanceof Error) {
@@ -23,5 +22,5 @@ export const useCreateOrder = () => {
     }
   }, []);
 
-  return {error, loading, createOrder};
+  return {error, loading, createProduct};
 }

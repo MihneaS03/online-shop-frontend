@@ -4,8 +4,9 @@ import { useContext, useEffect } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
 import { Product } from "../../interfaces/products/product.interface";
 import { CartItem } from "../../interfaces/cart/cart.interface";
-import { useFetchProduct } from "../../hooks/useFetchProduct";
-import { useDeleteProduct } from "../../hooks/useDeleteProduct";
+import { useFetchProduct } from "../../hooks/products/useFetchProduct";
+import { useDeleteProduct } from "../../hooks/products/useDeleteProduct";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -49,6 +50,7 @@ export default function ProductDetails() {
   };
 
   const { addItemToCart } = useContext(ShoppingCartContext);
+  const auth = useAuth();
 
   return (
     <>
@@ -61,19 +63,31 @@ export default function ProductDetails() {
       {!product ? (
         <h1>The product could not be found</h1>
       ) : (
-        <div className="product-details">
+        <div className="">
           <div className="header">
             <div className="heading">
               <h1>Product: {product.name}</h1>
             </div>
             <div className="buttons">
-              <button onClick={() => handleAddToCart(product)}>
+              <button
+                onClick={() => handleAddToCart(product)}
+                disabled={auth.customer?.role !== "customer"}
+              >
                 Add to cart
               </button>
               <Link to={`/products/edit/${id}`} state={product}>
-                <button className="edit-btn">EDIT</button>
+                <button
+                  className="edit-btn"
+                  disabled={auth.customer?.role !== "admin"}
+                >
+                  EDIT
+                </button>
               </Link>
-              <button className="delete-btn" onClick={() => handleDelete()}>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete()}
+                disabled={auth.customer?.role !== "admin"}
+              >
                 DELETE
               </button>
             </div>

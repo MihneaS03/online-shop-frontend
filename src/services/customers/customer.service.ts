@@ -1,15 +1,15 @@
 import { BASE_URL, API_URLS } from "../../constants/url.constant"
 
-const CATEGORIES_BASE_URL: string = BASE_URL + API_URLS.CATEGORIES;
+const CUSTOMERS_BASE_URL: string = BASE_URL + API_URLS.CUSTOMERS;
 
-export const productCategoryService = {
-  getAll: async (signal: AbortSignal | null = null) => {
+export const customerService = {
+  getById: async (id: string) => {
     try {
-      const response = await fetch(CATEGORIES_BASE_URL, {signal});
+      const response = await fetch(`${CUSTOMERS_BASE_URL}/${id}`);
 
       if (!response.ok) {
         if (response.status === 401) {
-          window.location.replace("/login");
+          //window.location.replace("/login");
         }
         throw new Error(`HTTP error: Status ${response.status}`);
       }

@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import ProductListItem from "../../components/product-list/product-list-item/product-list-item";
 import "./product-list.scss";
-import { useFetchProducts } from "../../hooks/useFetchProducts";
+import { useFetchProducts } from "../../hooks/products/useFetchProducts";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 export default function ProductList() {
   const { products, error, loading } = useFetchProducts();
+  const auth = useAuth();
 
   return (
     <>
@@ -19,7 +21,7 @@ export default function ProductList() {
               <button>See Cart</button>
             </Link>
             <Link to="/products/add">
-              <button>ADD</button>
+              <button disabled={auth.customer?.role !== "admin"}>ADD</button>
             </Link>
           </div>
         </div>

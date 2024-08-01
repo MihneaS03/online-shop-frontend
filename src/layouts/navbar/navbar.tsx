@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import "./navbar.scss";
-import { useAuth } from "../../hooks/useAuth";
-import { useState } from "react";
+import { useAuth } from "../../hooks/auth/useAuth";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const auth = useAuth();
@@ -9,6 +9,10 @@ export default function Navbar() {
     auth.customer ? true : false
   );
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setIsUserLoggedIn(auth.customer ? true : false);
+  }, [auth]);
 
   const handleLogout = () => {
     auth.logout();
@@ -49,7 +53,7 @@ export default function Navbar() {
           </li>
         ) : (
           <div className="logout-container">
-            <p>Hello, John!</p>
+            <p>Hello, {auth.customer?.username}</p>
             <button onClick={handleLogout} className="logout-btn">
               Logout
             </button>

@@ -2,8 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import "./login-page.scss";
-import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "../../hooks/auth/useLogin";
+import { useEffect } from "react";
 
 const LoginUserSchema = z.object({
   username: z.string().min(1, { message: "Please enter a username" }),
@@ -22,19 +23,21 @@ export default function LoginPage() {
     resolver: zodResolver(LoginUserSchema),
   });
 
-  const auth = useAuth();
+  const { error, login } = useLogin();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (error) {
+      setError("root", {
+        message: error,
+      });
+    }
+  }, [error, setError]);
+
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      auth.login(data);
+    const successful = await login(data);
+    if (successful) {
       navigate("/");
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("root", {
-          message: err.message,
-        });
-      }
     }
   };
 
@@ -57,7 +60,7 @@ export default function LoginPage() {
           <label htmlFor="password">Pasword</label>
           <input
             {...register("password")}
-            type="text"
+            type="password"
             placeholder="Password"
             id="password"
           />
@@ -70,7 +73,7 @@ export default function LoginPage() {
               {isSubmitting ? "Loading..." : "LOGIN"}
             </button>
           </div>
-
+          <br />
           {errors.root && <div className="text-red">{errors.root.message}</div>}
         </form>
       </div>

@@ -3,10 +3,10 @@ import "./edit-product-form.scss";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productService } from "../../services/products/product.service";
-import { useFetchProduct } from "../../hooks/useFetchProduct";
 import { useEffect } from "react";
-import { useFetchCategories } from "../../hooks/useFetchCategories";
+import { useFetchProduct } from "../../hooks/products/useFetchProduct";
+import { useFetchCategories } from "../../hooks/products/useFetchCategories";
+import { useEditProduct } from "../../hooks/products/useEditProduct";
 
 const EditProductSchema = z.object({
   name: z
@@ -39,8 +39,8 @@ export default function EditProductForm() {
 
   const { product, error, loading, fetchProduct, setProductFromState } =
     useFetchProduct();
-
   const { categories } = useFetchCategories();
+  const { editProduct } = useEditProduct();
 
   const {
     register,
@@ -77,17 +77,13 @@ export default function EditProductForm() {
   }, [product, setValue]);
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      if (id && product) {
-        await productService.update(id, data);
-        navigate(-1);
-      }
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("root", {
-          message: err.message,
-        });
-      }
+    if (id && product) {
+      await editProduct(id, data);
+      navigate(-1);
+    } else if (error) {
+      setError("root", {
+        message: error,
+      });
     }
   };
 

@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
-import { productService } from "../services/products/product.service";
-
+import { productService } from "../../services/products/product.service";
 
 export const useDeleteProduct = () => {
   const [deleteError, setDeleteError] = useState<string | null>(null);

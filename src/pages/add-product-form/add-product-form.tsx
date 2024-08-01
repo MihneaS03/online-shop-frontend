@@ -3,8 +3,8 @@ import "./add-product-form.scss";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { productService } from "../../services/products/product.service";
-import { useFetchCategories } from "../../hooks/useFetchCategories";
+import { useFetchCategories } from "../../hooks/products/useFetchCategories";
+import { useCreateProduct } from "../../hooks/products/useCreateProduct";
 
 const AddProductSchema = z.object({
   name: z
@@ -31,6 +31,7 @@ type FormFields = z.infer<typeof AddProductSchema>;
 export default function AddProductForm() {
   const navigate = useNavigate();
   const { categories } = useFetchCategories();
+  const { error, createProduct } = useCreateProduct();
 
   const {
     register,
@@ -42,15 +43,13 @@ export default function AddProductForm() {
   });
 
   const onSubmit: SubmitHandler<FormFields> = async (data) => {
-    try {
-      await productService.create(data);
+    await createProduct(data);
+    if (error) {
+      setError("root", {
+        message: error,
+      });
+    } else {
       navigate(-1);
-    } catch (err) {
-      if (err instanceof Error) {
-        setError("root", {
-          message: err.message,
-        });
-      }
     }
   };
 

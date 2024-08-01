@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { ProductCategory } from "../interfaces/products/product.interface";
-import { productCategoryService } from "../services/products/product-category.service";
+import { ProductCategory } from "../../interfaces/products/product.interface";
+import { productCategoryService } from "../../services/products/product-category.service";
 
 export const useFetchCategories = () => {
   const [categories, setCategories] = useState<ProductCategory[] | null>(null);

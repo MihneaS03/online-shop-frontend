@@ -3,12 +3,16 @@ import { CreateProductDTO, EditProductDTO } from "../../interfaces/products/prod
 
 const PRODUCTS_BASE_URL: string = BASE_URL + API_URLS.PRODUCTS;
 
+
 export const productService = {
   getAll: async (signal: AbortSignal | null = null) => {
     try {
       const response = await fetch(PRODUCTS_BASE_URL, {signal});
 
       if (!response.ok) {
+        if (response.status === 401) {
+          //window.location.replace("/");
+        }
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
@@ -24,6 +28,9 @@ export const productService = {
       const response = await fetch(`${PRODUCTS_BASE_URL}/${id}`, {signal});
 
       if (!response.ok) {
+        if (response.status === 401) {
+          //window.location.replace("/login");
+        }
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
@@ -45,7 +52,9 @@ export const productService = {
       })
 
       if (!response.ok) {
-        console.log(await response.text());
+        if (response.status === 401) {
+          //window.location.replace("/login");
+        }
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
@@ -67,7 +76,9 @@ export const productService = {
       })
 
       if (!response.ok) {
-        console.log(await response.text());
+        if (response.status === 401) {
+          //window.location.replace("/login");
+        }
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
@@ -85,6 +96,9 @@ export const productService = {
       });
 
       if (!response.ok) {
+        if (response.status === 401) {
+          //window.location.replace("/login");
+        }
         throw new Error(`HTTP error: Status ${response.status}`);
       }
 
