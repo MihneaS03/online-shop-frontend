@@ -8,6 +8,7 @@ import {
   CreateOrderDTO,
 } from "../../interfaces/orders/order.interface";
 import { useCreateOrder } from "../../hooks/useCreateOrder";
+import "./shopping-cart.scss";
 
 export default function ShoppingCart() {
   const navigate = useNavigate();
@@ -41,37 +42,39 @@ export default function ShoppingCart() {
 
   return (
     <>
-      <div className="header">
-        <div className="heading">
-          <h1>Shopping Cart</h1>
+      <div className="shopping-cart">
+        <div className="header">
+          <div className="heading">
+            <h1>Shopping Cart</h1>
+          </div>
+
+          <div className="buttons">
+            <Link to="/checkout">
+              <button onClick={handleCheckout}>CHECKOUT</button>
+            </Link>
+          </div>
         </div>
 
-        <div className="buttons">
-          <Link to="/checkout">
-            <button onClick={handleCheckout}>CHECKOUT</button>
-          </Link>
-        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Product Name</th>
+              <th>Price</th>
+              <th>Quantity</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {shoppingCartItems.map((item: CartItem) => (
+              <ShoppingCartItem key={item.id} item={item} />
+            ))}
+          </tbody>
+        </table>
+
+        {error && <h1>{error}</h1>}
+        {loading && <h1>Processing Order...</h1>}
       </div>
-
-      <table>
-        <thead>
-          <tr>
-            <th>Category</th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Quantity</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {shoppingCartItems.map((item: CartItem) => (
-            <ShoppingCartItem key={item.id} item={item} />
-          ))}
-        </tbody>
-      </table>
-
-      {error && <h1>{error}</h1>}
-      {loading && <h1>Processing Order...</h1>}
     </>
   );
 }

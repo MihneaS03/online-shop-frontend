@@ -1,11 +1,11 @@
-.edit-form-body {
+.login-form-body {
 
   h1 {
     text-align: center;
   }
 
   form {
-    max-width: 700px;
+    max-width: 400px;
     margin: 0 auto;
     padding: 20px;
     border: 1px solid rgb(174, 173, 173);
@@ -42,12 +42,7 @@
       border-radius: 5px;
       cursor: pointer;
   
-      &.cancel {
-        background-color: #ccc;
-        color: #000;
-      }
-  
-      &.save {
+      &.login {
         background-color: #007bff;
         color: #fff;
       }

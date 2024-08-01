@@ -61,7 +61,7 @@ export default function ProductDetails() {
       {!product ? (
         <h1>The product could not be found</h1>
       ) : (
-        <div>
+        <div className="product-details">
           <div className="header">
             <div className="heading">
               <h1>Product: {product.name}</h1>

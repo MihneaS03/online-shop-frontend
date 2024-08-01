@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useState } from "react";
 import { CartItem } from "../interfaces/cart/cart.interface";
 
-interface ShoppingCartContextType {
+interface IShoppingCartContext {
   shoppingCartItems: CartItem[];
   addItemToCart: (item: CartItem) => void;
   deleteItemFromCart: (id: string) => void;
@@ -11,8 +11,8 @@ interface ShoppingCartProviderProps {
   children: ReactNode;
 }
 
-export const ShoppingCartContext = createContext<ShoppingCartContextType>(
-  {} as ShoppingCartContextType
+export const ShoppingCartContext = createContext<IShoppingCartContext>(
+  {} as IShoppingCartContext
 );
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {

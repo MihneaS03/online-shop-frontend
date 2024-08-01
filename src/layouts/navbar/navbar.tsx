@@ -1,0 +1,61 @@
+import { NavLink, useNavigate } from "react-router-dom";
+import "./navbar.scss";
+import { useAuth } from "../../hooks/useAuth";
+import { useState } from "react";
+
+export default function Navbar() {
+  const auth = useAuth();
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(
+    auth.customer ? true : false
+  );
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    auth.logout();
+    setIsUserLoggedIn(false);
+    navigate("/login");
+  };
+
+  return (
+    <nav className="nav">
+      <NavLink to="/" className="site-title">
+        Online Shop
+      </NavLink>
+      <ul>
+        <li>
+          <NavLink
+            to="/products"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Products
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/shopping-cart"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            Cart
+          </NavLink>
+        </li>
+        {!isUserLoggedIn ? (
+          <li>
+            <NavLink
+              to="/login"
+              className={({ isActive }) => (isActive ? "active" : "")}
+            >
+              Login
+            </NavLink>
+          </li>
+        ) : (
+          <div className="logout-container">
+            <p>Hello, John!</p>
+            <button onClick={handleLogout} className="logout-btn">
+              Logout
+            </button>
+          </div>
+        )}
+      </ul>
+    </nav>
+  );
+}
