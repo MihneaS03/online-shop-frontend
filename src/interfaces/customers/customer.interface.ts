@@ -8,6 +8,12 @@ export interface Customer {
   role: string;
 }
 
+export interface CustomerDTO {
+  id: string;
+  username: string;
+  role: string;
+}
+
 export interface LoginDTO {
   username: string;
   password: string;

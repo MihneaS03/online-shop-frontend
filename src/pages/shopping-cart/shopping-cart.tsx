@@ -44,7 +44,7 @@ export default function ShoppingCart() {
 
   return (
     <>
-      {auth.customer?.role !== "customer" ? (
+      {auth.user?.role !== "customer" ? (
         <h1>Access denied</h1>
       ) : (
         <div className="shopping-cart">

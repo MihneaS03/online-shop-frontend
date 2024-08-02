@@ -1,18 +1,13 @@
 import { useCallback, useContext, useState } from "react";
 import {
   Customer,
+  CustomerDTO,
   LoginDTO,
 } from "../../interfaces/customers/customer.interface";
 import { AuthContext } from "../../context/auth.context";
 import useAuthService from "../../services/auth/auth.service";
 import useCustomerService from "../../services/customers/customer.service";
-
-interface LoginReturnType {
-  id: string;
-  username: string;
-  accessToken: string;
-  refreshToken: string;
-}
+import { LoginResponse } from "../../interfaces/auth/login.interface";
 
 export const useLogin = () => {
   const [error, setError] = useState<string | null>(null);
@@ -27,9 +22,14 @@ export const useLogin = () => {
     async (userData: LoginDTO) => {
       try {
         setLoading(true);
-        const data: LoginReturnType = await loginUser(userData);
+        const data: LoginResponse = await loginUser(userData);
         const customer: Customer = await getById(data.id);
-        setLoginData(customer, data.accessToken, data.refreshToken);
+        const customerDTO: CustomerDTO = {
+          id: customer.id,
+          username: customer.username,
+          role: customer.role,
+        };
+        setLoginData(customerDTO, data.accessToken);
         setError(null);
         return true;
       } catch (err) {

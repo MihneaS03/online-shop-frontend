@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 export default function Navbar() {
   const auth = useAuth();
   const [isUserLoggedIn, setIsUserLoggedIn] = useState<boolean>(
-    auth.customer ? true : false
+    auth.user ? true : false
   );
   const navigate = useNavigate();
 
   useEffect(() => {
-    setIsUserLoggedIn(auth.customer ? true : false);
+    setIsUserLoggedIn(auth.user ? true : false);
   }, [auth]);
 
   const handleLogout = () => {
@@ -53,7 +53,7 @@ export default function Navbar() {
           </li>
         ) : (
           <div className="logout-container">
-            <p>Hello, {auth.customer?.username}</p>
+            <p>Hello, {auth.user?.username}</p>
             <button onClick={handleLogout} className="logout-btn">
               Logout
             </button>

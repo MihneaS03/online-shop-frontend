@@ -19,6 +19,11 @@ export default function ProductDetails() {
 
   const { deleteError, deleteLoading, deleteProduct } = useDeleteProduct();
 
+  const { addItemToCart } = useContext(ShoppingCartContext);
+  const auth = useAuth();
+  const isAdmin = auth.user?.role == "admin";
+  const isCustomer = auth.user?.role == "customer";
+
   useEffect(() => {
     const controller = new AbortController();
     if (productState) {
@@ -49,9 +54,6 @@ export default function ProductDetails() {
     navigate("/products");
   };
 
-  const { addItemToCart } = useContext(ShoppingCartContext);
-  const auth = useAuth();
-
   return (
     <>
       {loading && <h1>Loading product...</h1>}
@@ -71,22 +73,19 @@ export default function ProductDetails() {
             <div className="buttons">
               <button
                 onClick={() => handleAddToCart(product)}
-                disabled={auth.customer?.role !== "customer"}
+                disabled={!isCustomer}
               >
                 Add to cart
               </button>
               <Link to={`/products/edit/${id}`} state={product}>
-                <button
-                  className="edit-btn"
-                  disabled={auth.customer?.role !== "admin"}
-                >
+                <button className="edit-btn" disabled={!isAdmin}>
                   EDIT
                 </button>
               </Link>
               <button
                 className="delete-btn"
                 onClick={() => handleDelete()}
-                disabled={auth.customer?.role !== "admin"}
+                disabled={!isAdmin}
               >
                 DELETE
               </button>

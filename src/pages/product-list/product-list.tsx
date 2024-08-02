@@ -7,6 +7,7 @@ import { useAuth } from "../../hooks/auth/useAuth";
 export default function ProductList() {
   const { products, error, loading } = useFetchProducts();
   const auth = useAuth();
+  const isAdmin = auth.user?.role == "admin";
 
   return (
     <>
@@ -21,7 +22,7 @@ export default function ProductList() {
               <button>See Cart</button>
             </Link>
             <Link to="/products/add">
-              <button disabled={auth.customer?.role !== "admin"}>ADD</button>
+              <button disabled={!isAdmin}>ADD</button>
             </Link>
           </div>
         </div>
