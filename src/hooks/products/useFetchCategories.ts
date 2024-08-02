@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import { ProductCategory } from "../../interfaces/products/product.interface";
-import { productCategoryService } from "../../services/products/product-category.service";
+import useProductCategoryService from "../../services/products/product-category.service";
 
 export const useFetchCategories = () => {
   const [categories, setCategories] = useState<ProductCategory[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
+  const { getAll } = useProductCategoryService();
+
   useEffect(() => {
     const controller = new AbortController();
 
     const fetchAllCategories = async () => {
       try {
-        const allCategories = await productCategoryService.getAll(controller.signal);
+        const allCategories = await getAll(controller.signal);
         setCategories(allCategories);
         setError(null);
       } catch (err) {
@@ -30,8 +32,7 @@ export const useFetchCategories = () => {
     fetchAllCategories();
 
     return () => controller.abort();
-  }, []);
+  }, [getAll]);
 
-
-  return {categories, error, loading};
-}
+  return { categories, error, loading };
+};

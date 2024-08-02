@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       setAccessToken(user.accessToken);
     }
-  }, [fetchedCustomer, fetchCustomer]);
+  }, [error, fetchedCustomer, fetchCustomer]);
 
   return (
     <AuthContext.Provider
