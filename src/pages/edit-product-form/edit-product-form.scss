@@ -1,0 +1,57 @@
+.edit-form-body {
+
+  h1 {
+    text-align: center;
+  }
+
+  form {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid rgb(174, 173, 173);
+    border-radius: 5px;
+  
+    input[type="text"],
+    input[type="number"],
+    input[type="textarea"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+      box-sizing: border-box;
+      border: 1px solid rgb(174, 173, 173);
+      border-radius: 5px;
+    }
+  
+    input[type="textarea"] {
+      height: 100px;
+    }
+  
+    .text-red {
+      color: red;
+      font-size: 12px;
+      margin-top: -8px;
+      margin-bottom: 8px;
+    }
+  
+    button {
+      margin: 10px 5px 0 0;
+      padding: 10px 20px;
+      border: 1px solid rgb(174, 173, 173) !important;
+      border-radius: 5px;
+      cursor: pointer;
+  
+      &.cancel {
+        background-color: #ccc;
+        color: #000;
+      }
+  
+      &.save {
+        background-color: #007bff;
+        color: #fff;
+      }
+    }
+  }
+}
+

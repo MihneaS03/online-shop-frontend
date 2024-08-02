@@ -1,11 +1,12 @@
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import "./product-details.scss";
 import { useContext, useEffect } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
 import { Product } from "../../interfaces/products/product.interface";
 import { CartItem } from "../../interfaces/cart/cart.interface";
-import { useFetchProduct } from "../../hooks/useFetchProduct";
-import { useDeleteProduct } from "../../hooks/useDeleteProduct";
+import { useFetchProduct } from "../../hooks/products/useFetchProduct";
+import { useDeleteProduct } from "../../hooks/products/useDeleteProduct";
+import { useAuth } from "../../hooks/auth/useAuth";
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -17,6 +18,11 @@ export default function ProductDetails() {
     useFetchProduct();
 
   const { deleteError, deleteLoading, deleteProduct } = useDeleteProduct();
+
+  const { addItemToCart } = useContext(ShoppingCartContext);
+  const auth = useAuth();
+  const isAdmin = auth.user?.role == "admin";
+  const isCustomer = auth.user?.role == "customer";
 
   useEffect(() => {
     const controller = new AbortController();
@@ -48,8 +54,6 @@ export default function ProductDetails() {
     navigate("/products");
   };
 
-  const { addItemToCart } = useContext(ShoppingCartContext);
-
   return (
     <>
       {loading && <h1>Loading product...</h1>}
@@ -61,17 +65,28 @@ export default function ProductDetails() {
       {!product ? (
         <h1>The product could not be found</h1>
       ) : (
-        <div>
+        <div className="">
           <div className="header">
             <div className="heading">
               <h1>Product: {product.name}</h1>
             </div>
             <div className="buttons">
-              <button onClick={() => handleAddToCart(product)}>
+              <button
+                onClick={() => handleAddToCart(product)}
+                disabled={!isCustomer}
+              >
                 Add to cart
               </button>
-              <button className="edit-btn">EDIT</button>
-              <button className="delete-btn" onClick={() => handleDelete()}>
+              <Link to={`/products/edit/${id}`} state={product}>
+                <button className="edit-btn" disabled={!isAdmin}>
+                  EDIT
+                </button>
+              </Link>
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete()}
+                disabled={!isAdmin}
+              >
                 DELETE
               </button>
             </div>

@@ -1,25 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { BASE_URL, API_URLS } from "../../constants/url.constant";
-import { CreateOrderDTO } from "../../interfaces/orders/order.interface";
 import { useAuth } from "../../hooks/auth/useAuth";
 import { useCallback } from "react";
 
-const ORDERS_BASE_URL: string = BASE_URL + API_URLS.ORDERS;
+const CUSTOMERS_BASE_URL: string = BASE_URL + API_URLS.CUSTOMERS;
 
-export default function useOrderService() {
+export default function useCustomerService() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const create = useCallback(
-    async (orderData: CreateOrderDTO) => {
+  const getById = useCallback(
+    async (id: string) => {
       try {
-        const response = await fetch(ORDERS_BASE_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${auth.accessToken}`,
-          },
-          body: JSON.stringify(orderData),
+        const response = await fetch(`${CUSTOMERS_BASE_URL}/${id}`, {
+          headers: { Authorization: `Bearer ${auth.accessToken}` },
         });
 
         if (!response.ok) {
@@ -38,5 +32,5 @@ export default function useOrderService() {
     [navigate, auth.accessToken]
   );
 
-  return { create };
+  return { getById };
 }
