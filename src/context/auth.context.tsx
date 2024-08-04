@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       JSON.stringify({
         id: customer.id,
         username: customer.username,
-        userRole: customer.role,
+        role: customer.role,
         accessToken,
       })
     );

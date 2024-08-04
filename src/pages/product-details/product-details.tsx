@@ -1,40 +1,38 @@
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import "./product-details.scss";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "../../context/shopping-cart.context";
 import { Product } from "../../interfaces/products/product.interface";
 import { CartItem } from "../../interfaces/cart/cart.interface";
-import { useFetchProduct } from "../../hooks/products/useFetchProduct";
-import { useDeleteProduct } from "../../hooks/products/useDeleteProduct";
 import { useAuth } from "../../hooks/auth/useAuth";
+import {
+  useDeleteProductMutation,
+  useGetProductByIdQuery,
+} from "../../services/products/product.api";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const location = useLocation();
-  const { product: productState } = location.state || {};
+  const { product: productState } = location.state;
+
   const navigate = useNavigate();
 
-  const { product, error, loading, fetchProduct, setProductFromState } =
-    useFetchProduct();
+  const [product, setProduct] = useState<Product | null>(productState || null);
 
-  const { deleteError, deleteLoading, deleteProduct } = useDeleteProduct();
+  const { data, isLoading, error } = useGetProductByIdQuery(id!, {
+    skip: productState,
+  });
+
+  const [deleteProduct] = useDeleteProductMutation();
 
   const { addItemToCart } = useContext(ShoppingCartContext);
   const auth = useAuth();
-  const isAdmin = auth.user?.role == "admin";
-  const isCustomer = auth.user?.role == "customer";
 
   useEffect(() => {
-    const controller = new AbortController();
-    if (productState) {
-      setProductFromState(productState);
-    } else {
-      if (id) {
-        fetchProduct(id, controller.signal);
-      }
+    if (!productState && data) {
+      setProduct(data);
     }
-    return () => controller.abort();
-  }, [id, productState, fetchProduct, setProductFromState]);
+  }, [productState, data]);
 
   const handleAddToCart = (product: Product) => {
     const item: CartItem = {
@@ -54,17 +52,22 @@ export default function ProductDetails() {
     navigate("/products");
   };
 
+  const isAdmin = auth.user?.role == "admin";
+  const isCustomer = auth.user?.role == "customer";
+
   return (
     <>
-      {loading && <h1>Loading product...</h1>}
-      {error && <h1>{error}</h1>}
-
-      {deleteLoading && <h1>Deleting product...</h1>}
-      {deleteError && <h1>{deleteError}</h1>}
-
-      {!product ? (
-        <h1>The product could not be found</h1>
-      ) : (
+      {error ? (
+        <div>
+          {error instanceof Error ? (
+            error.message
+          ) : (
+            <div>An error has occured</div>
+          )}
+        </div>
+      ) : isLoading ? (
+        <div>Loading products...</div>
+      ) : product ? (
         <div className="">
           <div className="header">
             <div className="heading">
@@ -108,6 +111,8 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
+      ) : (
+        <h1>The product could not be found</h1>
       )}
     </>
   );

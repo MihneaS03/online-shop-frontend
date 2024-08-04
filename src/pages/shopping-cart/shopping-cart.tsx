@@ -8,15 +8,15 @@ import {
   CreateOrderDTO,
 } from "../../interfaces/orders/order.interface";
 import "./shopping-cart.scss";
-import { useCreateOrder } from "../../hooks/orders/useCreateOrder";
 import { useAuth } from "../../hooks/auth/useAuth";
+import { useCreateOrderMutation } from "../../services/orders/order.api";
 
 export default function ShoppingCart() {
   const navigate = useNavigate();
   const { shoppingCartItems } = useContext(ShoppingCartContext);
   const auth = useAuth();
 
-  const { error, loading, createOrder } = useCreateOrder();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
 
   const handleCheckout = async () => {
     const mockOrderData: CreateOrderDTO = {
@@ -33,12 +33,11 @@ export default function ShoppingCart() {
         } as OrderProduct;
       }),
     };
-
-    await createOrder(mockOrderData);
-    if (error) {
-      console.error(error);
-    } else {
+    try {
+      await createOrder(mockOrderData);
       navigate("/products");
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -77,8 +76,7 @@ export default function ShoppingCart() {
             </tbody>
           </table>
 
-          {error && <h1>{error}</h1>}
-          {loading && <h1>Processing Order...</h1>}
+          {isLoading && <h1>Processing Order...</h1>}
         </div>
       )}
     </>

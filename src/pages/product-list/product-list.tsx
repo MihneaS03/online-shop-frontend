@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import ProductListItem from "../../components/product-list/product-list-item/product-list-item";
 import "./product-list.scss";
-import { useFetchProducts } from "../../hooks/products/useFetchProducts";
 import { useAuth } from "../../hooks/auth/useAuth";
+import { useGetAllProductsQuery } from "../../services/products/product.api";
 
 export default function ProductList() {
-  const { products, error, loading } = useFetchProducts();
+  const { data: products, isLoading, error } = useGetAllProductsQuery();
   const auth = useAuth();
   const isAdmin = auth.user?.role == "admin";
 
@@ -27,10 +27,17 @@ export default function ProductList() {
           </div>
         </div>
 
-        {loading && <div>Loading products...</div>}
         {error ? (
-          <div>{error}</div>
-        ) : (
+          <div>
+            {error instanceof Error ? (
+              error.message
+            ) : (
+              <div>An error has occured</div>
+            )}
+          </div>
+        ) : isLoading ? (
+          <div>Loading products...</div>
+        ) : products ? (
           <table>
             <thead>
               <tr>
@@ -47,7 +54,7 @@ export default function ProductList() {
                 ))}
             </tbody>
           </table>
-        )}
+        ) : null}
       </div>
     </>
   );

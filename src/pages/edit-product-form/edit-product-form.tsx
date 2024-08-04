@@ -3,10 +3,13 @@ import "./edit-product-form.scss";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useFetchProduct } from "../../hooks/products/useFetchProduct";
-import { useFetchCategories } from "../../hooks/products/useFetchCategories";
-import { useEditProduct } from "../../hooks/products/useEditProduct";
+import { useEffect, useState } from "react";
+import {
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "../../services/products/product.api";
+import { Product } from "../../interfaces/products/product.interface";
+import { useGetAllProductCategoriesQuery } from "../../services/products/product-category.api";
 
 const EditProductSchema = z.object({
   name: z
@@ -33,14 +36,18 @@ type FormFields = z.infer<typeof EditProductSchema>;
 export default function EditProductForm() {
   const { id } = useParams();
   const location = useLocation();
-  const { product: productState } = location.state || {};
-
+  const { product: productState } = location.state;
   const navigate = useNavigate();
 
-  const { product, error, loading, fetchProduct, setProductFromState } =
-    useFetchProduct();
-  const { categories } = useFetchCategories();
-  const { editProduct } = useEditProduct();
+  const [product, setProduct] = useState<Product | null>(productState || null);
+
+  const { data: fetchedProduct } = useGetProductByIdQuery(id!, {
+    skip: productState,
+  });
+
+  const [updateProduct] = useUpdateProductMutation();
+
+  const { data: categories } = useGetAllProductCategoriesQuery();
 
   const {
     register,
@@ -53,16 +60,10 @@ export default function EditProductForm() {
   });
 
   useEffect(() => {
-    const controller = new AbortController();
-    if (productState) {
-      setProductFromState(productState);
-    } else {
-      if (id) {
-        fetchProduct(id, controller.signal);
-      }
+    if (!productState && fetchedProduct) {
+      setProduct(fetchedProduct);
     }
-    return () => controller.abort();
-  }, [id, productState, fetchProduct, setProductFromState]);
+  }, [productState, fetchedProduct]);
 
   useEffect(() => {
     if (product) {
@@ -76,22 +77,23 @@ export default function EditProductForm() {
     }
   }, [product, setValue]);
 
-  const onSubmit: SubmitHandler<FormFields> = async (data) => {
+  const onSubmit: SubmitHandler<FormFields> = async (productData) => {
     if (id && product) {
-      await editProduct(id, data);
-      navigate(-1);
-    } else if (error) {
-      setError("root", {
-        message: error,
-      });
+      try {
+        await updateProduct({ id, productData });
+        navigate(-1);
+      } catch (err) {
+        if (err instanceof Error) {
+          setError("root", {
+            message: err.message,
+          });
+        }
+      }
     }
   };
 
   return (
     <>
-      {loading && <h1>Loading...</h1>}
-      {error && <h1>{error}</h1>}
-
       <div className="edit-form-body">
         <h1>Edit: {product?.name}</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
