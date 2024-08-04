@@ -13,7 +13,7 @@ import {
 export default function ProductDetails() {
   const { id } = useParams();
   const location = useLocation();
-  const { product: productState } = location.state;
+  const { product: productState } = location.state || {};
 
   const navigate = useNavigate();
 

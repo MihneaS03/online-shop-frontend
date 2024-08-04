@@ -36,18 +36,20 @@ type FormFields = z.infer<typeof EditProductSchema>;
 export default function EditProductForm() {
   const { id } = useParams();
   const location = useLocation();
-  const { product: productState } = location.state;
+  const { product: productState } = location.state || {};
   const navigate = useNavigate();
 
   const [product, setProduct] = useState<Product | null>(productState || null);
 
-  const { data: fetchedProduct } = useGetProductByIdQuery(id!, {
-    skip: productState,
-  });
+  const { data: fetchedProduct, isLoading: isLoadingProduct } =
+    useGetProductByIdQuery(id!, {
+      skip: productState,
+    });
 
   const [updateProduct] = useUpdateProductMutation();
 
-  const { data: categories } = useGetAllProductCategoriesQuery();
+  const { data: categories, isLoading: isLoadingCategories } =
+    useGetAllProductCategoriesQuery();
 
   const {
     register,
@@ -94,98 +96,107 @@ export default function EditProductForm() {
 
   return (
     <>
-      <div className="edit-form-body">
-        <h1>Edit: {product?.name}</h1>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <label htmlFor="name">Name</label>
-          <input
-            {...register("name")}
-            type="text"
-            placeholder="Name"
-            id="name"
-          />
-          {errors.name && <div className="text-red">{errors.name.message}</div>}
+      {isLoadingProduct || isLoadingCategories ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="edit-form-body">
+          <h1>Edit: {product?.name}</h1>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label htmlFor="name">Name</label>
+            <input
+              {...register("name")}
+              type="text"
+              placeholder="Name"
+              id="name"
+            />
+            {errors.name && (
+              <div className="text-red">{errors.name.message}</div>
+            )}
 
-          <label htmlFor="category">Category</label>
-          <select {...register("category")} id="category">
-            <option value="">Select a category</option>
-            {categories &&
-              categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-          </select>
+            <label htmlFor="category">Category</label>
+            <select {...register("category")} id="category">
+              <option value="">Select a category</option>
+              {categories &&
+                categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+            </select>
 
-          <label htmlFor="price">Price</label>
-          <input
-            {...register("price")}
-            type="number"
-            placeholder="Price"
-            id="price"
-          />
-          {errors.price && (
-            <div className="text-red">{errors.price.message}</div>
-          )}
+            <label htmlFor="price">Price</label>
+            <input
+              {...register("price")}
+              type="number"
+              placeholder="Price"
+              id="price"
+            />
+            {errors.price && (
+              <div className="text-red">{errors.price.message}</div>
+            )}
 
-          <label htmlFor="weight">Weight</label>
-          <input
-            {...register("weight")}
-            type="number"
-            placeholder="Weight"
-            id="weight"
-            step="any"
-          />
-          {errors.weight && (
-            <div className="text-red">{errors.weight.message}</div>
-          )}
+            <label htmlFor="weight">Weight</label>
+            <input
+              {...register("weight")}
+              type="number"
+              placeholder="Weight"
+              id="weight"
+              step="any"
+            />
+            {errors.weight && (
+              <div className="text-red">{errors.weight.message}</div>
+            )}
 
-          <label htmlFor="supplier">Supplier</label>
-          <input
-            {...register("supplier")}
-            type="text"
-            placeholder="Supplier"
-            id="supplier"
-          />
-          {errors.supplier && (
-            <div className="text-red">{errors.supplier.message}</div>
-          )}
+            <label htmlFor="supplier">Supplier</label>
+            <input
+              {...register("supplier")}
+              type="text"
+              placeholder="Supplier"
+              id="supplier"
+            />
+            {errors.supplier && (
+              <div className="text-red">{errors.supplier.message}</div>
+            )}
 
-          <label htmlFor="imageUrl">Image URL</label>
-          <input
-            {...register("imageUrl")}
-            type="text"
-            placeholder="Image URL"
-            id="imageUrl"
-          />
-          {errors.imageUrl && (
-            <div className="text-red">{errors.imageUrl.message}</div>
-          )}
+            <label htmlFor="imageUrl">Image URL</label>
+            <input
+              {...register("imageUrl")}
+              type="text"
+              placeholder="Image URL"
+              id="imageUrl"
+            />
+            {errors.imageUrl && (
+              <div className="text-red">{errors.imageUrl.message}</div>
+            )}
 
-          <label htmlFor="description">Description</label>
-          <input
-            {...register("description")}
-            type="textarea"
-            placeholder="Description"
-            id="description"
-          />
-          {errors.description && (
-            <div className="text-red">{errors.description.message}</div>
-          )}
+            <label htmlFor="description">Description</label>
+            <input
+              {...register("description")}
+              type="textarea"
+              placeholder="Description"
+              id="description"
+            />
+            {errors.description && (
+              <div className="text-red">{errors.description.message}</div>
+            )}
 
-          <div className="buttons">
-            <button className="cancel" onClick={() => navigate(-1)}>
-              CANCEL
-            </button>
+            <div className="buttons">
+              <button className="cancel" onClick={() => navigate(-1)}>
+                CANCEL
+              </button>
 
-            <button className="save" disabled={isSubmitting} type="submit">
-              {isSubmitting ? "Loading..." : "SAVE"}
-            </button>
-          </div>
+              <button className="save" disabled={isSubmitting} type="submit">
+                {isSubmitting ? "Loading..." : "SAVE"}
+              </button>
+            </div>
 
-          {errors.root && <div className="text-red">{errors.root.message}</div>}
-        </form>
-      </div>
+            {errors.root && (
+              <div className="text-red">{errors.root.message}</div>
+            )}
+          </form>
+        </div>
+      )}
+      )
     </>
   );
 }
